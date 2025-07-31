@@ -1,3 +1,10 @@
+"""Utility functions for dynamic driver loading and configuration inference.
+
+Includes helper functions to:
+- Dynamically load a driver class based on a dotted import path.
+- Infer the oslo.config group name based on the driver's import path.
+"""
+
 from importlib import import_module
 
 

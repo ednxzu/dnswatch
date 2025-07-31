@@ -1,3 +1,8 @@
+"""Base class for DNSWatch resolver drivers.
+
+All resolvers must inherit from BaseResolver and implement the get_ip() method.
+"""
+
 from abc import ABC, abstractmethod
 
 
