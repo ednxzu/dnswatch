@@ -9,10 +9,28 @@ import pytest
 from oslo_config import cfg
 
 
+@pytest.fixture(scope="session", autouse=True)
+def setup_resolvers_default_group():
+    """Ensure 'resolvers.default' group and 'url' option are registered globally."""
+    group = cfg.OptGroup(name="resolvers.default")
+
+    conf = cfg.CONF
+    try:
+        conf.register_group(group)
+    except cfg.DuplicateOptGroupError:
+        pass
+
+    try:
+        conf.register_opts([cfg.StrOpt("url")], group=group)
+    except cfg.DuplicateOptError:
+        pass
+
+    conf["resolvers.default"].url = "http://example.com"
+
+    yield
+
+
 @pytest.fixture
 def default_resolver_config():
-    conf = cfg.ConfigOpts()
-    conf.register_opts([cfg.StrOpt("url")], group="resolvers.default")
-    conf.register_group(cfg.OptGroup("resolvers.default"))
-    conf["resolvers.default"].url = "http://example.com"
-    return conf["resolvers.default"]
+    """Return the global 'resolvers.default' config group for use in tests."""
+    return cfg.CONF["resolvers.default"]
