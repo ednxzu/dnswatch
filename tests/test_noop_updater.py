@@ -9,7 +9,6 @@ from dnswatch.updaters.noop.noop_updater import NoopUpdater
 
 @pytest.fixture
 def noop_config_fixture():
-    # Minimal mock config object, just needs to exist
     return {}
 
 
