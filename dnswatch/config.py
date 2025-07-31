@@ -1,3 +1,9 @@
+"""Configuration definitions for dnswatch components.
+
+This module defines global and per-driver configuration options
+using oslo.config.
+"""
+
 from oslo_config import cfg
 
 CONF = cfg.CONF
@@ -13,7 +19,10 @@ resolvers_default_opts = [
     cfg.StrOpt(
         "url",
         default="https://icanhazip.com",
-        help="URL to fetch the public IP address from (default: https://icanhazip.com). This url should return the IP address as plain text.",
+        help=(
+            "URL to fetch the public IP address from "
+            "(default: https://icanhazip.com). This URL should return the IP address as plain text."
+        ),
     ),
 ]
 CONF.register_opts(resolvers_default_opts, group="resolvers.default")
@@ -26,3 +35,11 @@ updaters_noop_opts = [
     )
 ]
 CONF.register_opts(updaters_noop_opts, group="updaters.noop")
+
+updaters_designate_opts = [
+    cfg.StrOpt("zone_id", help="Designate zone ID to update"),
+    cfg.StrOpt("record_name", help="DNS record name to update"),
+    cfg.StrOpt("record_type", default="A", help="Record type (A, AAAA, etc.)"),
+    cfg.IntOpt("ttl", default=300, help="TTL for the record"),
+]
+CONF.register_opts(updaters_designate_opts, group="updaters.designate")
