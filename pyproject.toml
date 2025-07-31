@@ -7,8 +7,8 @@ authors = [
 ]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.10"
-dependencies = ["oslo-log (>=7.2.0,<8.0.0)", "oslo-config (>=10.0.0,<11.0.0)"]
+requires-python = ">=3.10,<4.0"
+dependencies = ["oslo-log (>=7.2.0,<8.0.0)", "oslo-config (>=10.0.0,<11.0.0)", "openstacksdk (>=4.6.0,<5.0.0)"]
 
 
 [build-system]
@@ -17,3 +17,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 dnswatch = "dnswatch.main:main"
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^3.3.7"
+pre-commit = "^4.2.0"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.4.1"
