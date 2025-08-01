@@ -111,8 +111,11 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           platforms: ${{ env.BUILD_PLATFORMS }}
 
-      - name: Run Trivy vulnerability scanner in tarball mode
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          input: ${{ gitea.workspace }}/dnswatch-oci.tar
-          severity: "CRITICAL,HIGH"
+      - name: Install Trivy
+        run: |
+          export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+          echo "Installing Trivy version $TRIVY_VERSION"
+          wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
+
+          ./trivy image --exit-code 0 --severity HIGH $IMAGE
+          ./trivy image --exit-code 1 --severity CRITICAL $IMAGE
