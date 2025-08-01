@@ -7,6 +7,8 @@ Includes helper functions to:
 
 from importlib import import_module
 
+VERSION = "0.0.0"
+
 
 def load_driver(import_path, config) -> object:
     module_path, class_name = import_path.rsplit(".", 1)
@@ -31,3 +33,14 @@ def infer_group(driver_path) -> str:
         raise ValueError(f"Driver path too short to infer group: {driver_path}")
 
     return ".".join(parts[:-1])
+
+
+def get_version(semantic: bool = False) -> str:
+    """
+    Get the current version of the dnswatch package.
+    If `semantic` is True, return a semantic version string.
+    Otherwise, return a simple version string.
+    """
+    if semantic:
+        return f"v{VERSION}"
+    return VERSION

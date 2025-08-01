@@ -9,7 +9,7 @@ from oslo_config import cfg
 from oslo_log import log as logging
 
 from dnswatch import config, log  # pylint: disable=unused-import
-from dnswatch.utils import load_driver, infer_group
+from dnswatch.utils import load_driver, infer_group, get_version
 
 CONF = cfg.CONF
 LOG = logging.getLogger(__name__, "dnswatch")
@@ -21,7 +21,7 @@ def main():
     CONF(project="dnswatch")
     log.setup(CONF)
 
-    LOG.info("dnswatch is starting up")
+    LOG.info("Starting dnswatch version %s", get_version())
 
     resolver_group = infer_group(CONF.resolver_driver)
     updater_group = infer_group(CONF.updater_driver)
