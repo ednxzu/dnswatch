@@ -14,6 +14,13 @@ dependencies = [
   "openstacksdk (>=4.6.0,<5.0.0)",
 ]
 
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.0"
+version_provider = "poetry"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version_files = ["pyproject.toml:^version"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
