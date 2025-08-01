@@ -15,10 +15,10 @@ class DefaultResolver(BaseResolver):
     def __init__(self, config):
         super().__init__(config)
         self.url = config.url
-        LOG.debug(f"[default resolver] Initialized with URL: {self.url}")
+        LOG.debug("[default resolver] Initialized with URL: %s", self.url)
 
     def get_ip(self) -> str:
-        LOG.debug(f"[default resolver] Fetching IP from {self.url}")
+        LOG.debug("[default resolver] Fetching IP from %s", self.url)
         try:
             response = requests.get(self.url, timeout=5)
             response.raise_for_status()
@@ -27,11 +27,11 @@ class DefaultResolver(BaseResolver):
             try:
                 ipaddress.ip_address(ip)
             except ValueError as exc:
-                LOG.error(f"[default resolver] Invalid IP format: '{ip}'")
-                raise ValueError(f"Invalid IP address received: '{ip}'") from exc
+                LOG.error("[default resolver] Invalid IP format: '%s'", ip)
+                raise ValueError("Invalid IP address received: '{ip}'") from exc
 
-            LOG.debug(f"[default resolver] Received valid IP: {ip}")
+            LOG.debug("[default resolver] Received valid IP: %s", ip)
             return ip
         except Exception:
-            LOG.exception(f"[default resolver] Failed to get IP from {self.url}")
+            LOG.exception("[default resolver] Failed to get IP from %s", self.url)
             raise
