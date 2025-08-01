@@ -72,21 +72,12 @@ jobs:
           secretId: ${{ secrets.VAULT_APPROLE_SECRET_ID }}
           secrets: |
             kv/data/cicd/gitea container_registry_uri | GITEA_REGISTRY_ADDRESS ;
-            kv/data/applications/gitea/users/actions username | GITEA_REGISTRY_USERNAME ;
-            kv/data/applications/gitea/users/actions token_write | GITEA_REGISTRY_TOKEN ;
 
       - name: Setup buildx
         id: buildx
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker-container
-
-      - name: Login to container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_ADDRESS }}
-          username: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_USERNAME }}
-          password: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_TOKEN }}
 
       - name: Prepare container metadata
         id: metadata
@@ -104,7 +95,7 @@ jobs:
           tags: |
             type=raw,value=${{ steps.generate-env.outputs.environment_name }}
 
-      - name: Build and publish
+      - name: Build container tarball
         id: build-and-push
         uses: docker/build-push-action@v6
         env:
@@ -118,9 +109,8 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           platforms: ${{ env.BUILD_PLATFORMS }}
 
-      - name: "Upload Artifact"
-        uses: christopherhx/gitea-upload-artifact@v4
+      - name: Run Trivy vulnerability scanner in tarball mode
+        uses: aquasecurity/trivy-action@0.28.0
         with:
-          name: dnswatch-oci.tar
-          path: ${{ gitea.workspace }}/dnswatch-oci.tar
-          retention-days: 1
+          input: ${{ gitea.workspace }}/dnswatch-oci.tar
+          severity: "CRITICAL,HIGH"
