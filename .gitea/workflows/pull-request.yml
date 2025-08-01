@@ -119,3 +119,5 @@ jobs:
 
           ./trivy image --exit-code 0 --severity HIGH $IMAGE
           ./trivy image --exit-code 1 --severity CRITICAL $IMAGE
+        env:
+          IMAGE: ${{ gitea.workspace }}/dnswatch-oci.tar
