@@ -1,5 +1,5 @@
 ---
-name: pull-requests-open
+name: pull-request
 on:
   pull_request:
     types:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   run-unit-tests:
-    name: Run pytests
+    name: Run pytest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
