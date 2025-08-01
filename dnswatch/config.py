@@ -20,12 +20,32 @@ resolvers_default_opts = [
         "url",
         default="https://icanhazip.com",
         help=(
-            "URL to fetch the public IP address from "
-            "(default: https://icanhazip.com). This URL should return the IP address as plain text."
+            "URL to fetch the public IP address from (default: https://icanhazip.com). "
+            "This URL should return the IP address as plain text."
         ),
     ),
 ]
 CONF.register_opts(resolvers_default_opts, group="resolvers.default")
+
+resolver_json_opts = [
+    cfg.StrOpt(
+        "url",
+        default="https://api.ipify.org?format=json",
+        help=(
+            "URL to fetch the public IP address from (default: https://api.ipify.org?format=json). "
+            "This URL should return a JSON object with the IP address as a field."
+        ),
+    ),
+    cfg.StrOpt(
+        "ip_field",
+        default="ip",
+        help=(
+            "Field in the JSON response that contains the public IP address (default: 'ip'). "
+            "This should match the key in the JSON object returned by the URL."
+        ),
+    ),
+]
+CONF.register_opts(resolver_json_opts, group="resolvers.json")
 
 updaters_noop_opts = [
     cfg.StrOpt(
