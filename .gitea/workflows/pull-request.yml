@@ -111,12 +111,20 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           platforms: ${{ env.BUILD_PLATFORMS }}
 
+      - name: Upload container tarball
+        uses: christopherhx/gitea-upload-artifact@v4
+        with:
+          name: dnswatch-oci.tar
+          path: ${{ gitea.workspace }}/dnswatch-oci.tar
+          retention-days: 1
+
       - name: Install Trivy
         run: |
           export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
           echo "Installing Trivy version $TRIVY_VERSION"
           wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
 
+          time ./trivy image --download-db-only
           ./trivy image --exit-code 0 --severity HIGH $IMAGE
           ./trivy image --exit-code 1 --severity CRITICAL $IMAGE
         env:
