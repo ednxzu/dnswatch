@@ -1,0 +1,41 @@
+FROM python:3.13-slim AS builder
+
+ARG DNSWATCH_VERSION=0.0.0
+
+ENV POETRY_VERSION=2.0.1 \
+    POETRY_HOME=/opt/poetry \
+    VENV_PATH=/opt/venv \
+    PATH="/opt/poetry/bin:/opt/venv/bin:$PATH" \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y curl build-essential \
+    && curl -sSL https://install.python-poetry.org | python3 - \
+    && poetry config virtualenvs.create false \
+    && python -m venv $VENV_PATH \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+COPY pyproject.toml poetry.lock README.md ./
+COPY dnswatch ./dnswatch
+
+RUN . $VENV_PATH/bin/activate \
+    && poetry install --no-interaction --no-root --only main \
+    && poetry build -f sdist \
+    && pip install dist/dnswatch-${DNSWATCH_VERSION}.tar.gz
+
+FROM python:3.13-slim AS runtime
+
+ENV PATH="/opt/venv/bin:$PATH" \
+    VENV_PATH=/opt/venv
+
+COPY --from=builder $VENV_PATH /opt/venv
+
+# Optional: embed default config
+# COPY etc/dnswatch.conf /app/dnswatch.conf
+
+WORKDIR /app
+
+ENTRYPOINT ["dnswatch", "--config-file", "/app/dnswatch.conf"]
