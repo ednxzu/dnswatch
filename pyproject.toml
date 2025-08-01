@@ -20,11 +20,14 @@ version = "0.0.0"
 version_provider = "poetry"
 tag_format = "v$version"
 update_changelog_on_bump = true
-version_files = ["pyproject.toml:^version"]
+version_files = ["pyproject.toml:^version", "dnswatch/utils.py:^VERSION"]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+version = "0.0.0"
 
 [tool.poetry.scripts]
 dnswatch = "dnswatch.main:main"
