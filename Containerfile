@@ -33,6 +33,12 @@ ENV PATH="/opt/venv/bin:$PATH" \
 
 COPY --from=builder $VENV_PATH /opt/venv
 
+# Remove unnecessary vulnerable packages
+RUN apt remove --purge -y libsqlite3-0 \
+    && apt-get autoremove --purge -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Optional: embed default config
 # COPY etc/dnswatch.conf /app/dnswatch.conf
 
