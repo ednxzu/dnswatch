@@ -125,7 +125,17 @@ jobs:
           wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
 
           time ./trivy image --download-db-only
-          ./trivy image --exit-code 0 --severity HIGH --input $IMAGE
-          ./trivy image --exit-code 1 --severity CRITICAL --input $IMAGE
+        env:
+          IMAGE: ${{ gitea.workspace }}/dnswatch-oci.tar
+
+      - name: "Run trivy scan for HIGH severity"
+        run: |
+          time ./trivy image --exit-code 0 --severity HIGH --input $IMAGE
+        env:
+          IMAGE: ${{ gitea.workspace }}/dnswatch-oci.tar
+
+      - name: "Run trivy scan for CRITICAL severity"
+        run: |
+          time ./trivy image --exit-code 1 --severity CRITICAL --input $IMAGE
         env:
           IMAGE: ${{ gitea.workspace }}/dnswatch-oci.tar
