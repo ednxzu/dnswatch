@@ -1,7 +1,5 @@
 FROM python:3.13-slim AS builder
 
-ARG DNSWATCH_VERSION=0.0.0
-
 ENV POETRY_VERSION=2.0.1 \
     POETRY_HOME=/opt/poetry \
     VENV_PATH=/opt/venv \
@@ -24,7 +22,7 @@ COPY dnswatch ./dnswatch
 RUN . $VENV_PATH/bin/activate \
     && poetry install --no-interaction --no-root --only main \
     && poetry build -f sdist \
-    && pip install dist/dnswatch-${DNSWATCH_VERSION}.tar.gz
+    && pip install dist/dnswatch-*.tar.gz
 
 FROM python:3.13-slim AS runtime
 
