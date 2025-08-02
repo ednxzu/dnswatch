@@ -4,6 +4,7 @@ Unit tests for the OpenStackDesignateUpdater class.
 
 import pytest
 from unittest.mock import MagicMock, patch
+from openstack.dns.v2 import recordset as _rs
 from dnswatch.updaters.designate import OpenStackDesignateUpdater
 
 
@@ -94,12 +95,15 @@ def test_update_existing_recordset(
     updater = OpenStackDesignateUpdater(config_mock)
     updater.update("5.6.7.8")
 
-    conn_mock.dns.update_recordset.assert_called_once_with(
-        config_mock.zone_id,
-        mock_recordset.id,
-        records=["5.6.7.8"],
-        ttl=config_mock.ttl,
-    )
+    conn_mock.dns.update_recordset.assert_called_once()
+    updated_recordset = conn_mock.dns.update_recordset.call_args.args[0]
+
+    assert isinstance(updated_recordset, _rs.Recordset)
+    assert updated_recordset.id == mock_recordset.id
+    assert updated_recordset.zone_id == config_mock.zone_id
+    assert updated_recordset.records == ["5.6.7.8"]
+    assert updated_recordset.ttl == config_mock.ttl
+
     conn_mock.dns.create_recordset.assert_not_called()
 
 
