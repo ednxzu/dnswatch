@@ -34,5 +34,5 @@ repos:
         entry: /bin/bash
         args:
           - -c
-          - poetry run oslo-config-generator --config-file etc/dnswatch-config-generator.conf --output-file etc/dnswatch.conf.sample
+          - poetry run oslo-config-generator --config-file etc/dnswatch-config-generator.conf
         files: ^etc/dnswatch-config-generator\.conf$
