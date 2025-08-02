@@ -6,6 +6,7 @@ allowing querying and updating of DNS records.
 
 from dnswatch.updaters.base import BaseUpdater
 from openstack import connection
+from openstack.dns.v2 import recordset as _rs
 from oslo_log import log as logging
 
 LOG = logging.getLogger(__name__)
@@ -69,12 +70,13 @@ class OpenStackDesignateUpdater(BaseUpdater):
 
         if record:
             LOG.info("[designate] Updating existing recordset: %s", record.id)
-            self.conn.dns.update_recordset(
-                self.zone_id,
-                record.id,
+            record_to_update = _rs.Recordset(
+                id=record.id,
+                zone_id=self.zone_id,
                 records=[ip],
                 ttl=self.ttl,
             )
+            self.conn.dns.update_recordset(record_to_update)
         else:
             LOG.info(
                 "[designate] Creating new recordset for %s with ip %s",
