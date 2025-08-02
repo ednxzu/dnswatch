@@ -37,8 +37,7 @@ RUN apt remove --purge -y libsqlite3-0 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Optional: embed default config
-# COPY etc/dnswatch.conf /app/dnswatch.conf
+COPY etc/dnswatch.conf.sample /app/dnswatch.conf
 
 WORKDIR /app
 
