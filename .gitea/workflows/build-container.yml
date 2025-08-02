@@ -8,7 +8,8 @@ on:
       - "v*"
 
 env:
-  IMAGE_NAME: ${{ gitea.repository }}
+  LOCAL_IMAGE_NAME: ${{ gitea.repository }}
+  DOCKERHUB_IMAGE_NAME: ednxzu/dnswatch
 
 jobs:
   build:
@@ -45,13 +46,21 @@ jobs:
             kv/data/cicd/gitea container_registry_uri | GITEA_REGISTRY_ADDRESS ;
             kv/data/applications/gitea/users/actions username | GITEA_REGISTRY_USERNAME ;
             kv/data/applications/gitea/users/actions token_write | GITEA_REGISTRY_TOKEN ;
+            kv/data/cicd/dockerhub username | DOCKERHUB_USERNAME ;
+            kv/data/cicd/dockerhub token_write | DOCKERHUB_TOKEN ;
 
-      - name: Login to container registry
+      - name: Login to local container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_ADDRESS }}
           username: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_USERNAME }}
           password: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_TOKEN }}
+
+      - name: Login to dockerhub container registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ steps.import-secrets.outputs.DOCKERHUB_USERNAME }}
+          password: ${{ steps.import-secrets.outputs.DOCKERHUB_TOKEN }}
 
       - name: Setup buildx
         id: buildx
@@ -63,7 +72,9 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with:
-          images: ${{ steps.import-secrets.outputs.GITEA_REGISTRY_ADDRESS }}/${{ env.IMAGE_NAME }}
+          images: |
+            ${{ env.DOCKERHUB_IMAGE_NAME }}
+            ${{ steps.import-secrets.outputs.GITEA_REGISTRY_ADDRESS }}/${{ env.LOCAL_IMAGE_NAME }}
           labels: |
             org.opencontainers.image.authors=${{ gitea.repository_owner }}
             org.opencontainers.image.created=${{ steps.get-build-date.outputs.build_date }}
