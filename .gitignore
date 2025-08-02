@@ -175,4 +175,4 @@ cython_debug/
 .pypirc
 
 # ignore test configuration files
-etc/*
+etc/dnswatch.conf

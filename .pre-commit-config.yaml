@@ -25,3 +25,14 @@ repos:
       - id: commitizen
       - id: commitizen-branch
         stages: [pre-push]
+
+  - repo: local
+    hooks:
+      - id: oslo-config-generator
+        name: Generate oslo sample config file
+        language: system
+        entry: /bin/bash
+        args:
+          - -c
+          - poetry run oslo-config-generator --config-file etc/dnswatch-config-generator.conf --output-file etc/dnswatch.conf.sample
+        files: ^etc/dnswatch-config-generator\.conf$

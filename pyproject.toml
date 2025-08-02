@@ -14,6 +14,9 @@ dependencies = [
   "openstacksdk (>=4.6.0,<5.0.0)",
 ]
 
+[project.entry-points."oslo.config.opts"]
+dnswatch = "dnswatch.config:list_opts"
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.1.0"
@@ -35,6 +38,7 @@ dnswatch = "dnswatch.main:main"
 [tool.poetry.group.dev.dependencies]
 pylint = "^3.3.7"
 pre-commit = "^4.2.0"
+oslo-config = "^10.0.0"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.4.1"
