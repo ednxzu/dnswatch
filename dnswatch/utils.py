@@ -7,7 +7,7 @@ Includes helper functions to:
 
 from importlib import import_module
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 
 def load_driver(import_path, config) -> object:

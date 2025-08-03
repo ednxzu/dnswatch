@@ -1,6 +1,6 @@
 [project]
 name = "dnswatch"
-version = "0.1.0"
+version = "0.2.0"
 description = "A pluggable dynamic DNS updater for rotating IPs. Bring your own resolvers and updaters."
 authors = [
   { name = "Bertrand Lanson", email = "bertrand.lanson@protonmail.com" },
@@ -19,7 +19,7 @@ dnswatch = "dnswatch.config:list_opts"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.0"
+version = "0.2.0"
 version_provider = "poetry"
 tag_format = "v$version"
 update_changelog_on_bump = true
@@ -30,7 +30,7 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-version = "0.1.0"
+version = "0.2.0"
 
 [tool.poetry.scripts]
 dnswatch = "dnswatch.main:main"

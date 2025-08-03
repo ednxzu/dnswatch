@@ -1,3 +1,14 @@
+## v0.2.0 (2025-08-03)
+
+### Feat
+
+- **container**: copy sample config file in the container to avoid unusable state if left untouched
+- **config**: make configuration modular and generate sample file
+
+### Fix
+
+- **updaters/designate**: fix error on updating an existing but wrong DNS record
+
 ## v0.1.0 (2025-08-02)
 
 ### Feat
