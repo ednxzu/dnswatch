@@ -1,20 +1,13 @@
-"""OpenStack Designate updater driver.
-
-This updater manages DNS recordsets in OpenStack Designate,
-allowing querying and updating of DNS records.
-"""
-
-from dnswatch.updaters.base import BaseUpdater
 from openstack import connection
 from openstack.dns.v2 import recordset as _rs
 from oslo_log import log as logging
+
+from dnswatch.updaters.base import BaseUpdater
 
 LOG = logging.getLogger(__name__)
 
 
 class OpenStackDesignateUpdater(BaseUpdater):
-    """Updater that manages DNS records using OpenStack Designate."""
-
     def __init__(self, config):
         super().__init__(config)
         self.zone_id = config.zone_id
@@ -24,19 +17,15 @@ class OpenStackDesignateUpdater(BaseUpdater):
 
         self.conn = connection.from_config()
 
-        # Normalize record name to a fully qualified domain name (FQDN)
         if not self.record_name.endswith("."):
             zone = self.conn.dns.get_zone(self.zone_id)
             zone_name = zone.name
             if not zone_name.endswith("."):
                 zone_name += "."
             self.record_name = f"{self.record_name}.{zone_name}"
-            LOG.debug(
-                "[designate] Normalized record name to FQDN: %s", self.record_name
-            )
+            LOG.debug("[designate] Normalized record name to FQDN: %s", self.record_name)
 
     def get_current_ip(self) -> str | None:
-        """Return the current IP set in the Designate record, or None if not found."""
         LOG.debug("[designate] Fetching record from Designate")
 
         record = self.conn.dns.find_recordset(
@@ -58,7 +47,6 @@ class OpenStackDesignateUpdater(BaseUpdater):
         return None
 
     def update(self, ip: str):
-        """Update or create the DNS recordset with the given IP."""
         LOG.debug("[designate] Updating record %s to %s", self.record_name, ip)
 
         record = self.conn.dns.find_recordset(

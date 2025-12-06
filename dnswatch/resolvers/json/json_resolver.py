@@ -1,19 +1,14 @@
-"""JSON Resolver module for dnswatch
-This module implements a resolver that fetches the public IP address
-from a specified JSON endpoint.
-"""
+import ipaddress
 
 import requests
-import ipaddress
 from oslo_log import log as logging
+
 from dnswatch.resolvers.base import BaseResolver
 
 LOG = logging.getLogger(__name__)
 
 
 class JsonResolver(BaseResolver):
-    """Resolves the public IP address from a JSON response."""
-
     def __init__(self, config):
         super().__init__(config)
         self.url = config.url

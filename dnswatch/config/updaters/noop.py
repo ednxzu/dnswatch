@@ -1,9 +1,3 @@
-"""
-No-op updater configuration options for dnswatch.
-
-This updater performs no actual DNS updates and can be used for testing or debugging.
-"""
-
 from oslo_config import cfg
 
 opts = [

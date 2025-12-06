@@ -1,10 +1,3 @@
-"""
-Default configuration options for dnswatch.
-
-Includes default resolver/updater drivers and
-the update interval setting.
-"""
-
 from oslo_config import cfg
 
 opts = [

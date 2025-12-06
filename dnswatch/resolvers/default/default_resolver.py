@@ -1,17 +1,14 @@
-"""Default IP resolver using a configurable HTTP endpoint."""
+import ipaddress
 
 import requests
-import ipaddress
 from oslo_log import log as logging
+
 from dnswatch.resolvers.base import BaseResolver
-from dnswatch.log import LOG
 
 LOG = logging.getLogger(__name__)
 
 
 class DefaultResolver(BaseResolver):
-    """Resolves the public IP address from a remote URL."""
-
     def __init__(self, config):
         super().__init__(config)
         self.url = config.url

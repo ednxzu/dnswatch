@@ -1,6 +1,8 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from openstack.dns.v2 import recordset as _rs
+
 from dnswatch.updaters.designate import OpenStackDesignateUpdater
 
 
@@ -88,9 +90,7 @@ class TestOpenStackDesignateUpdater:
         conn_mock.dns.create_recordset.assert_not_called()
 
     @patch("openstack.connection.from_config")
-    def test_create_recordset_if_not_found(
-        self, from_config_mock, config_mock, conn_mock
-    ):
+    def test_create_recordset_if_not_found(self, from_config_mock, config_mock, conn_mock):
         from_config_mock.return_value = conn_mock
 
         conn_mock.dns.find_recordset.return_value = None

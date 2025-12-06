@@ -1,10 +1,3 @@
-"""Utility functions for dynamic driver loading and configuration inference.
-
-Includes helper functions to:
-- Dynamically load a driver class based on a dotted import path.
-- Infer the oslo.config group name based on the driver's import path.
-"""
-
 from importlib import import_module
 
 VERSION = "0.2.0"
@@ -19,14 +12,8 @@ def load_driver(import_path, config) -> object:
 
 
 def infer_group(driver_path) -> str:
-    """
-    Given a full driver path like `dnswatch.resolvers.default.Resolver`,
-    return a config group like `resolvers.default`.
-    """
     if not driver_path.startswith("dnswatch."):
-        raise ValueError(
-            f"Expected driver path to start with 'dnswatch.': {driver_path}"
-        )
+        raise ValueError(f"Expected driver path to start with 'dnswatch.': {driver_path}")
 
     parts = driver_path[len("dnswatch.") :].split(".")
     if len(parts) < 2:
@@ -36,11 +23,6 @@ def infer_group(driver_path) -> str:
 
 
 def get_version(semantic: bool = False) -> str:
-    """
-    Get the current version of the dnswatch package.
-    If `semantic` is True, return a semantic version string.
-    Otherwise, return a simple version string.
-    """
     if semantic:
         return f"v{VERSION}"
     return VERSION

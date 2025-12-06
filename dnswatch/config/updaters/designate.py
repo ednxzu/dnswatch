@@ -1,10 +1,3 @@
-"""
-Designate updater configuration options for dnswatch.
-
-Configuration for interacting with OpenStack Designate DNS service,
-including zone ID, DNS record details, and TTL settings.
-"""
-
 from oslo_config import cfg
 
 opts = [
