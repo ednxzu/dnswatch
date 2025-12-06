@@ -6,7 +6,7 @@ class BaseUpdater(ABC):
         self.config = config
 
     @abstractmethod
-    def get_current_ip(self) -> str:
+    def get_current_ip(self) -> str | None:
         pass
 
     @abstractmethod

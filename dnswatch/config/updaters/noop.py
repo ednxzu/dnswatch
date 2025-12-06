@@ -7,5 +7,3 @@ opts = [
         help="No-op marker; this updater performs no updates.",
     )
 ]
-
-group = cfg.OptGroup("updaters.noop", title="Noop Updater Options")

@@ -6,6 +6,7 @@ def register_opts(conf: cfg.ConfigOpts) -> None:
     from dnswatch.config.resolvers import default as resolver_default
     from dnswatch.config.resolvers import json as resolver_json
     from dnswatch.config.updaters import designate as updater_designate
+    from dnswatch.config.updaters import infomaniak as updater_infomaniak
     from dnswatch.config.updaters import noop as updater_noop
 
     conf.register_opts(defaults.opts)
@@ -14,6 +15,7 @@ def register_opts(conf: cfg.ConfigOpts) -> None:
     conf.register_opts(resolver_json.opts, group="resolvers.json")
     conf.register_opts(updater_noop.opts, group="updaters.noop")
     conf.register_opts(updater_designate.opts, group="updaters.designate")
+    conf.register_opts(updater_infomaniak.opts, group="updaters.infomaniak")
 
 
 def list_opts():
@@ -22,6 +24,7 @@ def list_opts():
         from dnswatch.config.resolvers import default as resolver_default
         from dnswatch.config.resolvers import json as resolver_json
         from dnswatch.config.updaters import designate as updater_designate
+        from dnswatch.config.updaters import infomaniak as updater_infomaniak
         from dnswatch.config.updaters import noop as updater_noop
     except Exception:
         import traceback
@@ -35,4 +38,5 @@ def list_opts():
         ("resolvers.json", resolver_json.opts),
         ("updaters.noop", updater_noop.opts),
         ("updaters.designate", updater_designate.opts),
+        ("updaters.infomaniak", updater_infomaniak.opts),
     ]

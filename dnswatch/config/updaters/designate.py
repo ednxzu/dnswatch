@@ -20,5 +20,3 @@ opts = [
         help="TTL (time-to-live) for the DNS record.",
     ),
 ]
-
-group = cfg.OptGroup("updaters.designate", title="Designate Updater Options")
