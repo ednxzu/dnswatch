@@ -2,44 +2,47 @@
 name = "dnswatch"
 version = "0.2.0"
 description = "A pluggable dynamic DNS updater for rotating IPs. Bring your own resolvers and updaters."
-authors = [
-  { name = "Bertrand Lanson", email = "bertrand.lanson@protonmail.com" },
-]
-license = { text = "MIT" }
-readme = "README.md"
+authors = [{ name = "Bertrand Lanson", email = "bertrand.lanson@protonmail.com" }]
 requires-python = ">=3.10,<4.0"
+readme = "README.md"
+license = { text = "MIT" }
 dependencies = [
-  "oslo-log (>=7.2.0,<8.0.0)",
-  "oslo-config (>=10.0.0,<11.0.0)",
-  "openstacksdk (>=4.6.0,<5.0.0)",
+    "oslo-log>=7.2.0,<8.0.0",
+    "oslo-config>=10.0.0,<11.0.0",
+    "openstacksdk>=4.6.0,<5.0.0",
 ]
+
+[project.scripts]
+dnswatch = "dnswatch.main:main"
 
 [project.entry-points."oslo.config.opts"]
 dnswatch = "dnswatch.config:list_opts"
 
+[dependency-groups]
+dev = [
+    "pylint>=3.3.7,<4",
+    "pre-commit>=4.2.0,<5",
+    "oslo-config>=10.0.0,<11",
+]
+test = [
+    "pytest>=8.4.1,<9",
+    "coverage>=7.10.1,<8",
+]
+
+[tool.uv]
+default-groups = [
+    "dev",
+    "test",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.commitizen]
 name = "cz_conventional_commits"
 version = "0.2.0"
-version_provider = "poetry"
+version_provider = "pep621"
 tag_format = "v$version"
 update_changelog_on_bump = true
 version_files = ["pyproject.toml:^version", "dnswatch/utils.py:^VERSION"]
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
-version = "0.2.0"
-
-[tool.poetry.scripts]
-dnswatch = "dnswatch.main:main"
-
-[tool.poetry.group.dev.dependencies]
-pylint = "^3.3.7"
-pre-commit = "^4.2.0"
-oslo-config = "^10.0.0"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.4.1"
-coverage = "^7.10.1"

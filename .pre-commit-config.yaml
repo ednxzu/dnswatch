@@ -1,26 +1,25 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
   - repo: https://github.com/pycqa/pylint
-    rev: v3.3.7
+    rev: v4.0.4
     hooks:
       - id: pylint
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 25.1.0
+    rev: 25.11.0
     hooks:
       - id: black
-  - repo: https://github.com/python-poetry/poetry
-    rev: "2.1.3" # add version here
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: "0.9.15"
     hooks:
-      - id: poetry-check
-      - id: poetry-lock
+      - id: uv-lock
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.6.2
+    rev: v4.10.0
     hooks:
       - id: commitizen
       - id: commitizen-branch
@@ -34,5 +33,5 @@ repos:
         entry: /bin/bash
         args:
           - -c
-          - poetry run oslo-config-generator --config-file etc/dnswatch-config-generator.conf
+          - uv run oslo-config-generator --config-file etc/dnswatch-config-generator.conf
         files: ^etc/dnswatch-config-generator\.conf$
