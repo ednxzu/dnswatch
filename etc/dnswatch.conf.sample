@@ -230,6 +230,29 @@
 #ttl = 300
 
 
+[updaters.infomaniak]
+
+#
+# From dnswatch
+#
+
+# Infomaniak DNS zone name to update. Example: example.com (string
+# value)
+#zone = <None>
+
+# DNS record name to update, without the zone prefix. Example: to
+# update test.example.com in zone example.com, value is 'test' (string
+# value)
+#record_name = <None>
+
+# DNS record type (A, AAAA, etc.). (string value)
+#record_type = A
+
+# TTL (time-to-live) for the DNS record. Must be between 60 and 86400.
+# (integer value)
+#ttl = 300
+
+
 [updaters.noop]
 
 #
