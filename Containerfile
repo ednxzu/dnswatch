@@ -16,12 +16,6 @@ FROM python:3.13-slim AS runtime
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin/dnswatch /usr/local/bin/dnswatch
 
-# Remove unnecessary vulnerable packages
-RUN apt remove --purge -y libsqlite3-0 \
-  && apt-get autoremove --purge -y \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
 COPY etc/dnswatch.conf.sample /app/dnswatch.conf
 
 WORKDIR /app
