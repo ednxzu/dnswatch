@@ -24,7 +24,7 @@ class InfomaniakDnsClient:
         }
 
     # NOTE(blanson): kwargs are standard requests.request arguments
-    # default headers and timeout and injected.
+    # default headers and timeout are injected.
     def _make_api_request(
         self,
         method: Literal["GET", "POST", "PATCH", "PUT", "DELETE"],
