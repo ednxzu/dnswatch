@@ -20,9 +20,9 @@ dnswatch = "dnswatch.config:list_opts"
 
 [dependency-groups]
 dev = [
-    "pylint>=3.3.7,<4",
     "pre-commit>=4.2.0,<5",
     "oslo-config>=10.0.0,<11",
+    "ruff>=0.14.8",
 ]
 test = [
     "pytest>=8.4.1,<9",
@@ -38,6 +38,25 @@ default-groups = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["B"]  # Allow assert statements in tests
 
 [tool.commitizen]
 name = "cz_conventional_commits"
