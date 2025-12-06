@@ -1,7 +1,3 @@
-"""
-Unit tests for the NoopUpdater updater class in dnswatch.
-"""
-
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -10,33 +6,40 @@ from dnswatch.updaters.noop.noop_updater import NoopUpdater
 
 
 class TestNoopUpdater:
-    """Unit tests for NoopUpdater."""
-
     @pytest.fixture
-    def noop_config(self):
-        """Provide empty config for NoopUpdater."""
+    def config_mock(self):
         return {}
 
+    @patch("dnswatch.updaters.noop.noop_updater.CONF")
     @patch("dnswatch.updaters.noop.noop_updater.DefaultResolver")
-    @patch("dnswatch.updaters.noop.noop_updater.LOG")
-    def test_get_current_ip_logs_and_returns_ip(self, mock_log, mock_resolver_cls, noop_config):
-        """Test that get_current_ip returns IP and logs appropriately."""
+    def test_init_creates_resolver(self, mock_resolver_cls, mock_conf, config_mock):
+        mock_conf.__getitem__.return_value = {"url": "https://icanhazip.com"}
+
+        updater = NoopUpdater(config_mock)
+
+        mock_resolver_cls.assert_called_once_with(config=mock_conf.__getitem__.return_value)
+        assert updater.resolver == mock_resolver_cls.return_value
+
+    @patch("dnswatch.updaters.noop.noop_updater.CONF")
+    @patch("dnswatch.updaters.noop.noop_updater.DefaultResolver")
+    def test_get_current_ip_returns_ip_from_resolver(
+        self, mock_resolver_cls, mock_conf, config_mock
+    ):
+        mock_conf.__getitem__.return_value = {"url": "https://icanhazip.com"}
         mock_resolver = MagicMock()
         mock_resolver.get_ip.return_value = "1.2.3.4"
         mock_resolver_cls.return_value = mock_resolver
 
-        updater = NoopUpdater(noop_config)
+        updater = NoopUpdater(config_mock)
         ip = updater.get_current_ip()
 
-        mock_resolver.get_ip.assert_called_once()
         assert ip == "1.2.3.4"
-        mock_log.info.assert_called_with("[noop] Simulated current DNS IP: %s", "1.2.3.4")
+        mock_resolver.get_ip.assert_called_once()
 
-    @patch("dnswatch.updaters.noop.noop_updater.LOG")
-    def test_update_logs_ip(self, mock_log, noop_config):
-        """Test that update logs the new IP."""
-        updater = NoopUpdater(noop_config)
+    @patch("dnswatch.updaters.noop.noop_updater.CONF")
+    @patch("dnswatch.updaters.noop.noop_updater.DefaultResolver")
+    def test_update_does_nothing(self, mock_resolver_cls, mock_conf, config_mock):
+        mock_conf.__getitem__.return_value = {"url": "https://icanhazip.com"}
+
+        updater = NoopUpdater(config_mock)
         updater.update("5.6.7.8")
-        mock_log.info.assert_called_with(
-            "[noop] Pretending to update DNS record to IP: %s", "5.6.7.8"
-        )

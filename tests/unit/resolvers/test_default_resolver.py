@@ -6,89 +6,99 @@ from dnswatch.resolvers.default.default_resolver import DefaultResolver
 
 
 class TestDefaultResolver:
-    def test_get_ip_success(self, default_resolver_config):
+    @pytest.fixture
+    def config_mock(self):
+        class Config:
+            url = "https://icanhazip.com"
+
+        return Config()
+
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_success(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.text = "192.0.2.123"
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            ip = resolver.get_ip()
-            assert ip == "192.0.2.123"
+        resolver = DefaultResolver(config_mock)
+        ip = resolver.get_ip()
 
-    def test_get_ip_failure(self, default_resolver_config):
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            side_effect=Exception("oops"),
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            with pytest.raises(Exception, match="oops"):
-                resolver.get_ip()
+        assert ip == "192.0.2.123"
+        mock_get.assert_called_once_with("https://icanhazip.com", timeout=5)
 
-    def test_get_ip_trailing_whitespace(self, default_resolver_config):
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_strips_whitespace(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
-        mock_response.text = "203.0.113.42\n"
+        mock_response.text = "  203.0.113.42\n  "
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            ip = resolver.get_ip()
-            assert ip == "203.0.113.42"
+        resolver = DefaultResolver(config_mock)
+        ip = resolver.get_ip()
 
-    def test_get_ip_ipv6(self, default_resolver_config):
+        assert ip == "203.0.113.42"
+
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_ipv6(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.text = "2001:db8::1"
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            ip = resolver.get_ip()
-            assert ip == "2001:db8::1"
+        resolver = DefaultResolver(config_mock)
+        ip = resolver.get_ip()
 
-    def test_get_ip_malformed(self, default_resolver_config):
+        assert ip == "2001:db8::1"
+
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_invalid_format_raises_error(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.text = "not_an_ip_address"
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            with pytest.raises(ValueError, match="Invalid IP address received"):
-                resolver.get_ip()
+        resolver = DefaultResolver(config_mock)
+        with pytest.raises(ValueError, match="Invalid IP address received"):
+            resolver.get_ip()
 
-    def test_get_ip_empty_response(self, default_resolver_config):
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_empty_response_raises_error(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.text = ""
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            with pytest.raises(ValueError, match="Invalid IP address received"):
-                resolver.get_ip()
+        resolver = DefaultResolver(config_mock)
+        with pytest.raises(ValueError, match="Invalid IP address received"):
+            resolver.get_ip()
 
-    def test_get_ip_invalid_format(self, default_resolver_config):
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_malformed_ip_raises_error(self, mock_get, config_mock):
         mock_response = Mock()
         mock_response.status_code = 200
         mock_response.text = "512.278.780.999"
+        mock_get.return_value = mock_response
 
-        with patch(
-            "dnswatch.resolvers.default.default_resolver.requests.get",
-            return_value=mock_response,
-        ):
-            resolver = DefaultResolver(default_resolver_config)
-            with pytest.raises(ValueError, match="Invalid IP address received"):
-                resolver.get_ip()
+        resolver = DefaultResolver(config_mock)
+        with pytest.raises(ValueError, match="Invalid IP address received"):
+            resolver.get_ip()
+
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_http_error_raises(self, mock_get, config_mock):
+        mock_get.side_effect = Exception("Connection failed")
+
+        resolver = DefaultResolver(config_mock)
+        with pytest.raises(Exception, match="Connection failed"):
+            resolver.get_ip()
+
+    @patch("dnswatch.resolvers.default.default_resolver.requests.get")
+    def test_get_ip_uses_timeout(self, mock_get, config_mock):
+        mock_response = Mock()
+        mock_response.status_code = 200
+        mock_response.text = "1.2.3.4"
+        mock_get.return_value = mock_response
+
+        resolver = DefaultResolver(config_mock)
+        resolver.get_ip()
+
+        mock_get.assert_called_once_with("https://icanhazip.com", timeout=5)

@@ -25,7 +25,7 @@ class TestOpenStackDesignateUpdater:
         return conn
 
     @patch("openstack.connection.from_config")
-    def test_normalizes_record_name(self, from_config_mock, config_mock, conn_mock):
+    def test_init_normalizes_record_name_to_fqdn(self, from_config_mock, config_mock, conn_mock):
         from_config_mock.return_value = conn_mock
 
         updater = OpenStackDesignateUpdater(config_mock)
@@ -34,7 +34,19 @@ class TestOpenStackDesignateUpdater:
         conn_mock.dns.get_zone.assert_called_once_with("zone-1234")
 
     @patch("openstack.connection.from_config")
-    def test_get_current_ip_returns_ip(self, from_config_mock, config_mock, conn_mock):
+    def test_init_stores_config_values(self, from_config_mock, config_mock, conn_mock):
+        from_config_mock.return_value = conn_mock
+
+        updater = OpenStackDesignateUpdater(config_mock)
+
+        assert updater.zone_id == "zone-1234"
+        assert updater.record_type == "A"
+        assert updater.ttl == 60
+
+    @patch("openstack.connection.from_config")
+    def test_get_current_ip_returns_ip_when_record_exists(
+        self, from_config_mock, config_mock, conn_mock
+    ):
         from_config_mock.return_value = conn_mock
 
         mock_recordset = MagicMock()
@@ -58,7 +70,6 @@ class TestOpenStackDesignateUpdater:
         self, from_config_mock, config_mock, conn_mock
     ):
         from_config_mock.return_value = conn_mock
-
         conn_mock.dns.find_recordset.return_value = None
 
         updater = OpenStackDesignateUpdater(config_mock)
@@ -90,9 +101,10 @@ class TestOpenStackDesignateUpdater:
         conn_mock.dns.create_recordset.assert_not_called()
 
     @patch("openstack.connection.from_config")
-    def test_create_recordset_if_not_found(self, from_config_mock, config_mock, conn_mock):
+    def test_update_creates_recordset_when_not_found(
+        self, from_config_mock, config_mock, conn_mock
+    ):
         from_config_mock.return_value = conn_mock
-
         conn_mock.dns.find_recordset.return_value = None
 
         updater = OpenStackDesignateUpdater(config_mock)
