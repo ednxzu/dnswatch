@@ -136,7 +136,7 @@ class InfomaniakDnsClient:
         return data
 
     def get_record(self, zone: str, record: str, record_type: str = "A") -> dict | None:
-        return self._get_record_by_name(zone, record, record_type)
+        return self._get_record_by_name(zone=zone, record=record, record_type=record_type)
 
     def update_record(
         self,
